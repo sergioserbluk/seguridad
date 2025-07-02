@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanitización de Datos en PHP</title>
+</head>
+<body>
+    <h1>Sanitización de Datos en PHP</h1>
+    <p>✨ Objetivo</p>
+    <p>Aprender a sanitizar datos de entrada en PHP para prevenir vulnerabilidades.</p>
+
+    <h2>💻 1. Sanitización de Texto</h2>
+    <p>Código:</p>
+    <pre><code>$texto = $_POST['texto'];
+if (isset($texto)) {
+    $texto_sanitizado = filter_var($texto, FILTER_SANITIZE_STRING);
+    echo "Texto sanitizado: $texto_sanitizado";
+} else {
+    echo "No se proporcionó texto.";
+}</code></pre>
+    <p>Explicación:</p>
+    <p>Usamos <code>filter_var</code> con <code>FILTER_SANITIZE_STRING</code> para eliminar etiquetas HTML y caracteres especiales.</p>
+
+    <h2>🚨 2. Sanitización de Email</h2>
+    <p>Código:</p>
+    <pre><code>$email = $_POST['email'];
+if (isset($email)) {
+    $email_sanitizado = filter_var($email, FILTER_SANITIZE_EMAIL);
+    echo "Email sanitizado: $email_sanitizado";
+} else {
+    echo "No se proporcionó email.";
+}</code></pre>
+    <p>Explicación:</p>
+    <p>Usamos <code>filter_var</code> con <code>FILTER_SANITIZE_EMAIL</code> para eliminar caracteres no válidos del email.</p>
+
+    <h2>📂 3. Sanitización de URL</h2>
+    <p>Código:</p>
+    <pre><code>$url = $_POST['url'];
+if (isset($url)) {
+    $url_sanitizada = filter_var($url, FILTER_SANITIZE_URL);
+    echo "URL sanitizada: $url_sanitizada";
+} else {
+    echo "No se proporcionó URL.";
+}</code></pre>
+    <p>Explicación:</p>
+    <p>Usamos <code>filter_var</code> con <code>FILTER_SANITIZE_URL</code> para eliminar caracteres no válidos de la URL.</p>
+
+    <h2>🖼️ 4. Sanitización de Archivos Subidos</h2>
+    <p>Código:</p>
+    <pre><code>$archivo = $_FILES['archivo'];
+if (isset($archivo) && $archivo['error'] === UPLOAD_ERR_OK) {
+    $nombre_archivo = basename($archivo['name']);
+    $nombre_archivo_sanitizado = preg_replace('/[^a-zA-Z0-9_\-\.]/', '', $nombre_archivo);
+    move_uploaded_file($archivo['tmp_name'], "uploads/" . $nombre_archivo_s
+anitizado);
+    echo "Archivo subido y sanitizado: $nombre_archivo_sanitizado";
+} else {
+    echo "Error al subir el archivo.";
+}</code></pre>
+    <p>Explicación:</p>
+    <p>Usamos <code>preg_replace</code> para eliminar caracteres no permitidos del nombre del archivo antes de moverlo al directorio de destino.</p>
+    
+    <h2>🧮 Resumen Comparativo</h2>
+            <table>
+        <thead>
+            <tr>
+                <th>Situación</th>
+                <th>Entrada maliciosa</th>
+                <th>Resultado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Texto con HTML</td>
+                <td>&lt;script&gt;alert('Hackeado')&lt;/script&gt;</td>
+                <td>Se elimina el script, mostrando solo el texto.</td>
+            </tr>
+            <tr>
+                <td>Email con caracteres no válidos</td>
+                <td
+                >
+                    <code>
+                    <script>alert('XSS');</script>
+                    </code>
+                </td>
+                <td>Se elimina el script, dejando solo el email válido.</td>
+            </tr>
+            <tr>
+                <td>URL con caracteres no válidos</td>
+                <td>http://example.com/?q=<script>alert('XSS');</script></td>
+                <td>Se elimina el script, dejando solo la URL válida.</td>
+            </tr>
+            <tr>
+                <td>Nombre de archivo con caracteres no permitidos</td>
+                <td>archivo_malicioso.php?cmd=rm -rf /</td>
+                <td>Se sanitiza el nombre, eliminando caracteres peligrosos.</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>Recuerda siempre sanitizar y validar los datos de entrada para proteger tu aplicación de ataques.</p>
+    <p>¡Gracias por aprender sobre sanitización de datos en PHP!</p>
+    <p>Para más información, visita la <a href="https://www.php.net/manual/es/filter.filters.sanitize.php">documentación oficial de PHP</a>.</p>
+</p>
+
+</body>
+</html>

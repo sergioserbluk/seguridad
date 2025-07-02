@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>validacion</title>
+</head>
+<body>
+    <h1>Validación de Datos en PHP</h1>
+    <p>✨ Objetivo</p>
+    <p>Aprender a validar datos de entrada en PHP para evitar vulnerabilidades.</p>
+
+    <h2>💻 1. Validación de Email</h2>
+    <p>Código:</p>
+    <pre><code>$email = $_POST['email'];
+if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo "Email válido: $email";
+} else {
+    echo "Email inválido.";
+}</code></pre>
+    <p>Explicación:</p>
+    <p>Usamos <code>filter_var</code> con <code>FILTER_VALIDATE_EMAIL</code> para validar el formato del email.</p>
+
+    <h2>🚨 2. Validación de Enteros</h2>
+    <p>Código:</p>
+    <pre><code>$numero = $_POST['numero'];
+if (filter_var($numero, FILTER_VALIDATE_INT)) {
+    echo "Número entero válido: $numero";
+} else {
+    echo "Número entero inválido.";
+}</code></pre>
+    <p>Explicación:</p>
+    <p>Usamos <code>filter_var</code> con <code>FILTER_VALIDATE_INT</code> para validar que sea un número entero.</p>
+
+    <h2>📂 3. Validación de URL</h2>
+    <p>Código:</p>
+    <pre><code>$url = $_POST['url'];
+if (filter_var($url, FILTER_VALIDATE_URL)) {
+    echo "URL válida: $url";
+} else {
+    echo "URL inválida.";
+}</code></pre>
+
+    <p>Explicación:</p>
+    <p>Usamos <code>filter_var</code> con <code>FILTER_VALIDATE_URL</code> para validar que sea una URL correcta.</p>
+
+    <h2>🖼️ 4. Validación de Archivos Subidos</h2>
+    <p>Código:</p>
+    <pre><code>$archivo = $_FILES['archivo'];
+if ($archivo['error'] === UPLOAD_ERR_OK) {
+    $tipoMime = mime_content_type($archivo['tmp_name']);
+    $ext = pathinfo($archivo['name'], PATHINFO_EXTENSION);
+    $tiposPermitidos = ['image/jpeg', 'image/png', 'image/gif'];
+    if (in_array($tipoMime, $tiposPermitidos) && in_array($
+ext, ['jpg', 'jpeg', 'png', 'gif'])) {
+        move_uploaded_file($archivo['tmp_name'], "uploads/" . $archivo['name']);
+        echo "Archivo subido correctamente.";
+    } else {
+        echo "Tipo de archivo no permitido.";
+    }
+} else {
+    echo "Error al subir el archivo.";
+}</code></pre>
+    <p>Explicación:</p>
+    <p>Validamos el tipo MIME y la extensión del archivo antes de moverlo al servidor.</p>
+
+    <h2>🧮 Resumen Comparativo
+    <table>
+        <thead>
+            <tr>
+                <th>Situación</th>
+                <th>Entrada maliciosa</th>
+                <th>Resultado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Email</td>
+                <td>
+                    <code>
+                    <script>alert('XSS');</script>
+                    </code>
+                </td>
+                <td>Previene XSS al validar el formato del email.</td>
+            </tr>
+            <tr>
+                <td>Número entero</td>
+                <td>
+                    <code>123abc</code>
+                </td>
+                <td>Previene inyección de código al validar que sea un entero.</td>
+            </tr>
+            <tr>
+                <td>URL</td>
+                <td>
+                    <code>javascript:alert('XSS');</code>
+                </td>
+                <td>Previene XSS al validar que sea una URL correcta.</td>
+            </tr>
+            <tr>
+                <td>Archivo subido</td>
+                <td>
+                    <code>malicioso.php</code>
+                </td>
+                <td>Previene ejecución de código malicioso al validar tipo y extensión.</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>Conclusión: Validar datos de entrada es crucial para la seguridad en PHP. Utiliza las funciones de validación integradas y siempre valida los datos antes de procesarlos.</p>
+    <h2>🎓 Actividad sugerida</h2
+        <p>Crear un formulario de registro que valide email, contraseña y archivo subido. Implementar las validaciones usando <code>filter_var</code> y comprobaciones de tipo MIME.</p>
+    <h2>🔹 Conclusión</h2>
+    <p>La validación de datos es un aspecto fundamental en el desarrollo de aplicaciones web seguras. Asegúrate de implementar siempre las mejores prácticas de validación en tus formularios.</p>
+
+    <h2>🔗 Recursos adicionales</h2
+        <ul>
+        <li><a href="https://www.php.net/manual/es/filter.filters.validate.php">Documentación de PHP sobre filtros de validación</a></li>
+        <li><a href="https://www.php.net/manual/es/features.file-upload.php">Documentación de PHP sobre carga de archivos</a></li
+            <li><a href="https://www.php.net/manual/es/function.mime-content-type.php">Documentación de PHP sobre mime_content_type</a></li
+                </ul
+                </h2
+                <h2>📚 Lecturas recomendadas</h2>
+                <ul>
+                    <li><a href="https://www.php.net/manual/es/filter.filters.validate.php">Documentación de PHP sobre filtros de validación</a></li>
+                    <li><a href="https://www.php.net/manual/es/features.file-upload.php">Documentación de PHP sobre carga de archivos</a></li>
+                    <li><a href="https://www.php.net/manual/es/function.mime-content-type.php">Documentación de PHP sobre mime_content_type</a></li>
+                </ul>
+    <h2>📖 Ejemplos prácticos</h2
+        <ul>
+        <li><a href="https://www.php.net/manual/es/filter.examples.validation.php">Ejemplos de validación con filter_var</a></li>
+        <li><a href="https://www.php.net/manual/es/features.file-upload.php#features.file-upload.examples">Ejemplos de carga de archivos en PHP</a></li
+            <li><a href="https://www.php.net/manual/es/function.mime-content-type.php#example-1">Ejemplo de uso de mime_content_type</a></li
+                    
+                </ul>
+                <h2>🔍 Buenas prácticas</h2>
+                <ul>
+                    <li>Utiliza siempre funciones de validación integradas de PHP.</li>
+                    <li>Valida todos los datos de entrada, incluso los que provienen de fuentes confiables.</li>
+                    <li>Implementa medidas de seguridad adicionales, como la sanitización de datos.</li>
+                </ul>
+   
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguridad en PHP</title>
+</head>
+<body>
+    <h1>Riesgos de No Sanitizar Datos en PHP</h1>
+    <p>✨ Objetivo</p>
+    <p>Mostrar ejemplos reales de qué puede pasar si no se sanitizan correctamente los datos de entrada en una aplicación PHP.</p>
+    <h2>💻 1. Ejecución de HTML (XSS)</h2>
+    <p>Código vulnerable:</p>
+    <pre><code>$nombre = $_GET['nombre'];
+echo "Hola, $nombre!";</code></pre>
+    <p>URL maliciosa:</p>
+    <pre><code>http://tusitio.com/index.php?nombre=&lt;script&gt;alert('Hackeado')&lt;/script&gt;</code></pre>
+    <p>Resultado:</p>
+    <p>Se ejecuta JavaScript en el navegador del usuario. Puede robar cookies o mostrar contenido engañoso.</p>
+    <p>Solución segura:</p>
+    <pre><code>$nombre = htmlspecialchars($_GET['nombre'], ENT_QUOTES, 'UTF-8');
+echo "Hola, $nombre!";</code></pre>
+    <h2>🚨 2. Inyección SQL (SQL Injection)</h2>
+    <p>Código vulnerable:</p>
+    <pre><code>$usuario = $_GET['usuario'];
+$consulta = "SELECT * FROM usuarios WHERE nombre = '$usuario'";</code></pre>
+    <p>Entrada maliciosa:</p>
+    <pre><code>usuario=' OR 1=1 --</code></pre>
+    <p>Resultado:</p>
+    <pre><code>Consulta resultante:
+SELECT * FROM usuarios WHERE nombre = '' OR 1=1 --';
+El atacante accede a todos los registros.</code></pre>
+    <p>Solución segura (PDO):</p>
+    <pre><code>$stmt = $pdo->prepare("SELECT * FROM usuarios WHERE nombre = :nombre");
+$stmt->execute(['nombre' => $_GET['usuario']]);</code></pre>
+    <h2>📂 3. Inyección en cabeceras HTTP</h2>
+    <p>Código vulnerable:</p>
+    <pre><code>header("Location: pagina.php?usuario=" . $_GET['usuario']);</code></pre>
+    <p>Entrada maliciosa:</p>
+    <pre><code>usuario=Juan%0d%0aSet-Cookie:admin=true</code></pre>
+    <p>Resultado:</p>
+    <p>El atacante podría inyectar cabeceras y modificar el comportamiento de la respuesta HTTP.</p>
+    <h2>🖼️ 4. Archivos maliciosos</h2>
+    <p>Carga permitida sin validación:</p>
+    <p>El atacante sube un archivo inofensivo.php con este contenido:</p>
+    <pre><code>&lt;?php system($_GET['cmd']); ?&gt;</code></pre>
+    <p>Luego accede a:</p>
+    <pre><code>http://tusitio.com/uploads/inofensivo.php?cmd=rm -rf /</code></pre>
+    <p>Resultado:</p>
+    <p>Ejecución remota de comandos en el servidor.</p>
+    <p>Solución:</p>
+    <p>Validar extensión y tipo MIME.</p>
+    <p>Guardar archivos con nombres aleatorios.</p>
+    <p>Nunca ejecutar directamente archivos subidos.</p>
+    <h2>🧮 Resumen Comparativo</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Situación</th>
+                <th>Entrada maliciosa</th>
+                <th>Resultado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>XSS en nombre</td>
+                <td>&lt;script&gt;</td>
+                <td>Ejecuta JS en navegador</td>
+            </tr>
+            <tr>
+                <td>SQL Injection</td>
+                <td>' OR 1=1 --</td>
+                <td>Acceso no autorizado a la BD</td>
+            </tr>
+            <tr>
+                <td>Cabecera HTTP</td>
+                <td>%0d%0a...</td>
+                <td>Inyección de cookies u otras cabeceras</td>
+            </tr>
+            <tr>
+                <td>Archivo malicioso</td>
+                <td>.php con código</td>
+                <td>Ejecución remota de comandos</td>
+            </tr>
+        </tbody>
+    </table>
+    <h2>🎓 Actividad sugerida</h2>
+    <p>Crear un formulario de contacto vulnerable y corregirlo aplicando funciones de sanitización como htmlspecialchars(), filter_var(), y el uso de PDO.</p>
+    <h2>🔹 Conclusión</h2>
+    <p>No confiar nunca en los datos del usuario.</p>
+    <p>Validar y sanitizar siempre.</p>
+    <p>Aplicar buenas prácticas y funciones seguras.</p>
+    <p>Mejor prevenir que corregir luego de un incidente.</p>
+</body>
+</html>
